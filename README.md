@@ -72,11 +72,9 @@ void Remove(string key)
 var validator = new ExpiringKeyValidator();
 validator.Add("key1", 5000); // 5 seconds
 
-var valid = validator.Validate("key2"); // true, key does not exist
-
 var invalid = validator.Validate("key1"); // false, key exists
 
 await Task.Delay(7000); // wait 7 seconds
 
-var validAfterTime =validator.Validate("key1"); // true, key does not exist
+var validAfterTime = validator.Validate("key1"); // true, key does not exist
 ```
