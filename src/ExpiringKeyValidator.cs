@@ -1,74 +1,47 @@
 using Microsoft.Extensions.Logging;
 using Soenneker.Validators.ExpiringKey.Abstract;
-using System.Collections.Concurrent;
-using System.Threading;
 using System.Threading.Tasks;
-using Soenneker.Extensions.ValueTask;
+using Soenneker.Dictionaries.ExpiringKey;
 
 namespace Soenneker.Validators.ExpiringKey;
 
 /// <inheritdoc cref="IExpiringKeyValidator"/>
 public class ExpiringKeyValidator : Validator.Validator, IExpiringKeyValidator
 {
-    private readonly ConcurrentDictionary<string, Timer> _keyDict;
+    private readonly ExpiringKeyDictionary _keyDict;
 
     public ExpiringKeyValidator(ILogger<ExpiringKeyValidator> logger) : base(logger)
     {
-        _keyDict = new ConcurrentDictionary<string, Timer>();
+        _keyDict = new ExpiringKeyDictionary();
     }
 
     public bool Validate(string key)
     {
-        return _keyDict.ContainsKey(key);
+        return !_keyDict.ContainsKey(key);
     }
 
     public bool ValidateAndAdd(string key, int expirationTimeMilliseconds)
     {
-        return _keyDict.TryAdd(key, CreateTimer(key, expirationTimeMilliseconds));
+        return _keyDict.TryAdd(key, expirationTimeMilliseconds);
     }
 
     public void Add(string key, int expirationTimeMilliseconds)
     {
-        _keyDict.TryAdd(key, CreateTimer(key, expirationTimeMilliseconds));
+        _keyDict.TryAdd(key, expirationTimeMilliseconds);
     }
 
     public void Remove(string key)
     {
-        if (_keyDict.TryRemove(key, out Timer? timer))
-        {
-            timer.Dispose();
-        }
-    }
-
-    private void Expire(object? state)
-    {
-        var key = (string) state!;
-
-        Remove(key);
-    }
-
-    private Timer CreateTimer(string key, int expirationTimeMilliseconds)
-    {
-        return new Timer(Expire, key, expirationTimeMilliseconds, Timeout.Infinite);
+        _keyDict.TryRemove(key);
     }
 
     public void Dispose()
     {
-        foreach (Timer timer in _keyDict.Values)
-        {
-            timer.Dispose();
-        }
-
-        _keyDict.Clear();
+        _keyDict.Dispose();
     }
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
-        foreach (Timer timer in _keyDict.Values)
-        {
-            await timer.DisposeAsync().NoSync();
-        }
-
-        _keyDict.Clear();
+        return _keyDict.DisposeAsync();
     }
 }
