@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\Soenneker.Validators.ExpiringKey.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Validators.ExpiringKey.csproj" />
     </ItemGroup>
 
 </Project>
