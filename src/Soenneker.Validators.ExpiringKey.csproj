@@ -44,6 +44,6 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
         <PackageReference Include="Soenneker.Dictionaries.ExpiringKey" Version="3.0.307" />
-        <PackageReference Include="Soenneker.Validators.Validator" Version="3.0.387" />
+        <PackageReference Include="Soenneker.Validators.Validator" Version="3.0.389" />
     </ItemGroup>
 </Project>
