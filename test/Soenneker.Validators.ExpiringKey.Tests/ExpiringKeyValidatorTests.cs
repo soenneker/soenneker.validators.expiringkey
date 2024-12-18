@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Soenneker.Validators.ExpiringKey.Abstract;
 using Soenneker.Tests.FixturedUnit;
 using Xunit;
-using Xunit.Abstractions;
+
 using FluentAssertions;
 
 namespace Soenneker.Validators.ExpiringKey.Tests;
