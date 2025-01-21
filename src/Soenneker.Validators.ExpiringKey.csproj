@@ -43,6 +43,6 @@
 
     <ItemGroup>
         <PackageReference Include="Soenneker.Dictionaries.ExpiringKey" Version="3.0.494" />
-        <PackageReference Include="Soenneker.Validators.Validator" Version="3.0.538" />
+        <PackageReference Include="Soenneker.Validators.Validator" Version="3.0.540" />
     </ItemGroup>
 </Project>
