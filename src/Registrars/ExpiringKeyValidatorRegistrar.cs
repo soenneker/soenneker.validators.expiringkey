@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Soenneker.Validators.ExpiringKey.Abstract;
 
@@ -12,16 +12,18 @@ public static class ExpiringKeyValidatorRegistrar
     /// <summary>
     /// Adds <see cref="IExpiringKeyValidator"/> as a singleton service. <para/>
     /// </summary>
-    public static void AddExpiringKeyValidatorAsSingleton(this IServiceCollection services)
+    public static IServiceCollection AddExpiringKeyValidatorAsSingleton(this IServiceCollection services)
     {
         services.TryAddSingleton<IExpiringKeyValidator, ExpiringKeyValidator>();
+        return services;
     }
 
     /// <summary>
     /// Adds <see cref="IExpiringKeyValidator"/> as a scoped service. <para/>
     /// </summary>
-    public static void AddExpiringKeyValidatorAsScoped(this IServiceCollection services)
+    public static IServiceCollection AddExpiringKeyValidatorAsScoped(this IServiceCollection services)
     {
         services.TryAddScoped<IExpiringKeyValidator, ExpiringKeyValidator>();
+        return services;
     }
 }
