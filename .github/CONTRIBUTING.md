@@ -1,4 +1,4 @@
-# Contributing to Soenneker.Validators.ExpiringKey
+﻿# Contributing to Soenneker.Validators.ExpiringKey
 
 We're excited that you're interested in contributing!
 
