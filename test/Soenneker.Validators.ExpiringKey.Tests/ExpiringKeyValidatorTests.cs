@@ -3,7 +3,7 @@ using Soenneker.Validators.ExpiringKey.Abstract;
 using Soenneker.Tests.FixturedUnit;
 using Xunit;
 
-using FluentAssertions;
+using AwesomeAssertions;
 
 namespace Soenneker.Validators.ExpiringKey.Tests;
 
