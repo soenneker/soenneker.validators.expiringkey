@@ -6,7 +6,7 @@ using Soenneker.Dictionaries.ExpiringKey;
 namespace Soenneker.Validators.ExpiringKey;
 
 /// <inheritdoc cref="IExpiringKeyValidator"/>
-public class ExpiringKeyValidator : Validator.Validator, IExpiringKeyValidator
+public sealed class ExpiringKeyValidator : Validator.Validator, IExpiringKeyValidator
 {
     private readonly ExpiringKeyDictionary _keyDict;
 
