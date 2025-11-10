@@ -34,7 +34,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public void Validate_ShouldReturnFalse_IfKeyExists()
     {
         // Arrange
-        var key = "test-key";
+        const string key = "test-key";
         _validator.Add(key, 1000);
 
         // Act
@@ -48,7 +48,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public void ValidateAndAdd_ShouldAddKey_IfKeyDoesNotExist()
     {
         // Arrange
-        var key = "test-key";
+        const string key = "test-key";
 
         // Act
         bool result = _validator.ValidateAndAdd(key, 1000);
@@ -62,7 +62,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public void ValidateAndAdd_ShouldNotAddKey_IfKeyExists()
     {
         // Arrange
-        var key = "test-key";
+        const string key = "test-key";
         _validator.Add(key, 1000);
 
         // Act
@@ -76,7 +76,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public void Add_ShouldAddKey()
     {
         // Arrange
-        var key = "test-key";
+        const string key = "test-key";
 
         // Act
         _validator.Add(key, 1000);
@@ -89,7 +89,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public void Remove_ShouldRemoveKey()
     {
         // Arrange
-        var key = "test-key";
+        const string key = "test-key";
         _validator.Add(key, 1000);
 
         // Act
@@ -103,7 +103,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public async Task Expire_ShouldRemoveKeyAfterExpiration()
     {
         // Arrange
-        var key = "test-key";
+        const string key = "test-key";
         _validator.Add(key, 500); // 0.5 seconds
 
         // Act
@@ -117,8 +117,8 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public void Dispose_ShouldDisposeAllTimers()
     {
         // Arrange
-        var key1 = "test-key-1";
-        var key2 = "test-key-2";
+        const string key1 = "test-key-1";
+        const string key2 = "test-key-2";
         _validator.Add(key1, 1000);
         _validator.Add(key2, 1000);
 
@@ -134,8 +134,8 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public async Task DisposeAsync_ShouldDisposeAllTimersAsync()
     {
         // Arrange
-        var key1 = "test-key-1";
-        var key2 = "test-key-2";
+        const string key1 = "test-key-1";
+        const string key2 = "test-key-2";
         _validator.Add(key1, 1000);
         _validator.Add(key2, 1000);
 
@@ -152,7 +152,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     {
         // Arrange
         var keys = new[] { "key1", "key2", "key3", "key4", "key5" };
-        var expirationTime = 1000; // 1 second
+        const int expirationTime = 1000; // 1 second
 
         // Act
         Parallel.ForEach(keys, key =>
@@ -180,8 +180,8 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
     public async Task Parallel_ValidateAndAdd_SameKey_ShouldWorkCorrectly()
     {
         // Arrange
-        var key = "test-key";
-        var expirationTime = 1000; // 1 second
+        const string key = "test-key";
+        const int expirationTime = 1000; // 1 second
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 10 }; // Adjust the degree of parallelism as needed
 
         // Act
