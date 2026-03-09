@@ -1,13 +1,14 @@
-﻿[![](https://img.shields.io/nuget/v/soenneker.validators.expiringkey.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.validators.expiringkey/)
+[![](https://img.shields.io/nuget/v/soenneker.validators.expiringkey.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.validators.expiringkey/)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.validators.expiringkey/publish-package.yml?style=for-the-badge)](https://github.com/soenneker/soenneker.validators.expiringkey/actions/workflows/publish-package.yml)
 [![](https://img.shields.io/nuget/dt/soenneker.validators.expiringkey.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.validators.expiringkey/)
+[![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.validators.expiringkey/codeql.yml?label=CodeQL&style=for-the-badge)](https://github.com/soenneker/soenneker.validators.expiringkey/actions/workflows/codeql.yml)
 
 # ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Validators.ExpiringKey
 ### A validation module that checks for keys, stores them, expires them after an amount of time
 
 Ideal for caching, session management, and more.
 
-## 🚀 Features
+## ?? Features
 
 - **Validate Key**: Check if a key exists.
 - **Add Key**: Add a key with an expiration time.
@@ -20,7 +21,7 @@ Ideal for caching, session management, and more.
 dotnet add package Soenneker.Validators.ExpiringKey
 ```
 
-## 💻 Usage
+## ?? Usage
 
 `IExpiringKeyValidator` can be registered within DI, and injected:
 
