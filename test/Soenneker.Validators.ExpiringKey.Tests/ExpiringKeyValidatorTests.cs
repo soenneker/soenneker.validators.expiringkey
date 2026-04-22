@@ -2,25 +2,24 @@ using System;
 using System.Threading.Tasks;
 using Soenneker.Validators.ExpiringKey;
 using Soenneker.Validators.ExpiringKey.Abstract;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 using Microsoft.Extensions.Logging;
 
 using AwesomeAssertions;
 
 namespace Soenneker.Validators.ExpiringKey.Tests;
 
-[Collection("Collection")]
-public class ExpiringKeyValidatorTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public class ExpiringKeyValidatorTests : HostedUnitTest
 {
     private readonly IExpiringKeyValidator _validator;
 
-    public ExpiringKeyValidatorTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public ExpiringKeyValidatorTests(Host host) : base(host)
     {
         _validator = Resolve<IExpiringKeyValidator>();
     }
 
-    [Fact]
+    [Test]
     public void Validate_ShouldReturnTrue_IfKeyDoesNotExist()
     {
         // Arrange
@@ -33,7 +32,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         result.Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public void Validate_ShouldReturnFalse_IfKeyExists()
     {
         // Arrange
@@ -54,7 +53,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         }
     }
 
-    [Fact]
+    [Test]
     public void ValidateAndAdd_ShouldAddKey_IfKeyDoesNotExist()
     {
         // Arrange
@@ -75,7 +74,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         }
     }
 
-    [Fact]
+    [Test]
     public void ValidateAndAdd_ShouldNotAddKey_IfKeyExists()
     {
         // Arrange
@@ -96,7 +95,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         }
     }
 
-    [Fact]
+    [Test]
     public void Add_ShouldAddKey()
     {
         // Arrange
@@ -116,7 +115,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         }
     }
 
-    [Fact]
+    [Test]
     public void Remove_ShouldRemoveKey()
     {
         // Arrange
@@ -130,7 +129,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         _validator.Validate(key).Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public async Task Expire_ShouldRemoveKeyAfterExpiration()
     {
         // Arrange
@@ -151,7 +150,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         }
     }
 
-    [Fact]
+    [Test]
     public void Dispose_ShouldDisposeAllTimers()
     {
         // Arrange - create a separate validator instance for this test
@@ -170,7 +169,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         validator.Validate(key2).Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public async Task DisposeAsync_ShouldDisposeAllTimersAsync()
     {
         // Arrange - create a separate validator instance for this test
@@ -189,7 +188,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         validator.Validate(key2).Should().BeTrue();
     }
 
-    [Fact]
+    [Test]
     public async Task Parallel_AddAndValidate_ShouldWorkCorrectly()
     {
         // Arrange
@@ -234,7 +233,7 @@ public class ExpiringKeyValidatorTests : FixturedUnitTest
         }
     }
 
-    [Fact]
+    [Test]
     public async Task Parallel_ValidateAndAdd_SameKey_ShouldWorkCorrectly()
     {
         // Arrange
