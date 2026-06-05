@@ -35,11 +35,18 @@ public sealed class ExpiringKeyValidator : Validator.Validator, IExpiringKeyVali
         _keyDict.TryRemove(key);
     }
 
+    /// <summary>
+    /// Releases resources used by the current instance.
+    /// </summary>
     public void Dispose()
     {
         _keyDict.Dispose();
     }
 
+    /// <summary>
+    /// Asynchronously releases resources used by the current instance.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public ValueTask DisposeAsync()
     {
         return _keyDict.DisposeAsync();
