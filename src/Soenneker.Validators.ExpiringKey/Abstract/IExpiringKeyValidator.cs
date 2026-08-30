@@ -24,14 +24,14 @@ public interface IExpiringKeyValidator : IValidator, IDisposable, IAsyncDisposab
     bool ValidateAndAdd(string key, int expirationTimeMilliseconds);
 
     /// <summary>
-    /// Adds the provided key to the dictionary with an expiration timer.
+    /// Attempts to add the key with an expiration timer. An existing key and its timer are left unchanged.
     /// </summary>
     /// <param name="key">The key to add.</param>
     /// <param name="expirationTimeMilliseconds">The expiration time in milliseconds for the key.</param>
     void Add(string key, int expirationTimeMilliseconds);
 
     /// <summary>
-    /// Removes the provided key from the dictionary and disposes of its associated timer.
+    /// Removes the provided key, when present, and synchronously disposes its associated timer.
     /// </summary>
     /// <param name="key">The key to remove.</param>
     void Remove(string key);

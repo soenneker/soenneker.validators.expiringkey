@@ -4,78 +4,61 @@
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.validators.expiringkey/codeql.yml?label=CodeQL&style=for-the-badge)](https://github.com/soenneker/soenneker.validators.expiringkey/actions/workflows/codeql.yml)
 
 # ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Validators.ExpiringKey
-### A validation module that checks for keys, stores them, expires them after an amount of time
-
-Ideal for caching, session management, and more.
-
-## ?? Features
-
-- **Validate Key**: Check if a key exists.
-- **Add Key**: Add a key with an expiration time.
-- **Validate and Add**: Validate if a key exists and add it if not.
-- **Remove Key**: Remove a key.
+An in-memory, thread-safe expiring-key gate for suppressing duplicate work within a time window.
 
 ## Installation
 
-```
+```bash
 dotnet add package Soenneker.Validators.ExpiringKey
 ```
 
-## ?? Usage
-
-`IExpiringKeyValidator` can be registered within DI, and injected:
+## Registration
 
 ```csharp
-public static async Task Main(string[] args)
-{
-    ...
-    builder.Services.AddExpiringKeyValidatorAsSingleton();
-}
+using Soenneker.Validators.ExpiringKey.Registrars;
+
+services.AddExpiringKeyValidatorAsSingleton();
 ```
 
-or it can be initialized manually: `new ExpiringKeyValidator()`.
+Singleton registration shares keys across all callers in the process. Scoped registration creates an independent key set per dependency-injection scope. The validator requires an `ILogger<ExpiringKeyValidator>` when constructed manually.
 
-### Validate Key
-
-Check if a key is present.
+## Atomic check-and-add
 
 ```csharp
-bool Validate(string key)
+bool accepted = validator.ValidateAndAdd(
+    key: $"webhook:{eventId}",
+    expirationTimeMilliseconds: 30_000);
+
+if (!accepted)
+    return; // The key already exists in the current window.
 ```
 
-### Add Key
+`ValidateAndAdd` is the safest operation for duplicate suppression because the existence check and insertion are atomic. It returns `true` only to the caller that added the key. The key is removed by its timer after the supplied interval.
 
-Add a key with an expiration time.
+## Individual operations
 
 ```csharp
-void Add(string key, int expirationTimeMilliseconds)
+validator.Add("job:42", 5_000);
+
+bool available = validator.Validate("job:42");
+// false: the key exists
+
+validator.Remove("job:42");
+
+available = validator.Validate("job:42");
+// true: the key is absent
 ```
 
-### Validate and Add Key
+`Validate` has intentionally inverted gate semantics: it returns `true` when the key does not exist and `false` while the key is present. It does not reserve an absent key, so a separate `Validate` followed by `Add` is racy under concurrency; use `ValidateAndAdd` when only one caller may proceed.
 
-Validate a key and add it if it doesn't exist.
+`Add` attempts insertion and returns no result. If the key already exists, its original expiration is retained; the call does not refresh or replace its timer. `Remove` is idempotent and synchronously disposes the removed timer.
 
-```csharp
-bool ValidateAndAdd(string key, int expirationTimeMilliseconds) // true if doesn't exist, false if it does
-```
+## Expiration and lifetime
 
-### Remove Key
+Expiration is an in-process timer duration in milliseconds. Values below `-1` throw `ArgumentOutOfRangeException`; `-1` represents an infinite timeout. Expiration callbacks run asynchronously, so a zero-duration key may be observable briefly before its callback removes it.
 
-Remove a key.
+This is not a distributed lock, durable cache, session store, or cross-process idempotency mechanism. Process restarts lose all keys, and separate validator instances do not share state.
 
-```csharp
-void Remove(string key)
-```
+The validator owns one timer per live key. Dispose it to release all timers; dependency injection handles disposal for registered instances. Calls after disposal follow the underlying dictionary's disposed-object behavior.
 
-## Example
-
-```csharp
-var validator = new ExpiringKeyValidator();
-validator.Add("key1", 5000); // 5 seconds
-
-var invalid = validator.Validate("key1"); // false, key exists
-
-await Task.Delay(7000); // wait 7 seconds
-
-var validAfterTime = validator.Validate("key1"); // true, key does not exist
-```
+Keys use the underlying concurrent dictionary's default string comparison. Avoid placing secrets or unbounded attacker-controlled values into a long-lived singleton without applying size and cardinality limits at the caller.

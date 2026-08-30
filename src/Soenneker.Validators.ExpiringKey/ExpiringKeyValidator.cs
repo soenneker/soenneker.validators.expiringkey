@@ -5,7 +5,6 @@ using Soenneker.Dictionaries.ExpiringKey;
 
 namespace Soenneker.Validators.ExpiringKey;
 
-/// <inheritdoc cref="IExpiringKeyValidator"/>
 public sealed class ExpiringKeyValidator : Validator.Validator, IExpiringKeyValidator
 {
     private readonly ExpiringKeyDictionary _keyDict;
@@ -32,7 +31,7 @@ public sealed class ExpiringKeyValidator : Validator.Validator, IExpiringKeyVali
 
     public void Remove(string key)
     {
-        _keyDict.TryRemove(key);
+        _keyDict.TryRemoveSync(key);
     }
 
     /// <summary>
