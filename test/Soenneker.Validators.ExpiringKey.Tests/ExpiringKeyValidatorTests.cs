@@ -151,7 +151,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public void Dispose_ShouldDisposeAllTimers()
+    public void Dispose_ShouldRejectFurtherOperations_AndAllowRepeatedDisposal()
     {
         // Arrange - create a separate validator instance for this test
         var logger = Resolve<ILogger<ExpiringKeyValidator>>();
@@ -165,12 +165,13 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
         validator.Dispose();
 
         // Assert
-        validator.Validate(key1).Should().BeTrue();
-        validator.Validate(key2).Should().BeTrue();
+        AssertDisposedOperations(validator, key1);
+        AssertDisposedOperations(validator, key2);
+        validator.Dispose();
     }
 
     [Test]
-    public async Task DisposeAsync_ShouldDisposeAllTimersAsync()
+    public async Task DisposeAsync_ShouldRejectFurtherOperations_AndAllowRepeatedDisposal()
     {
         // Arrange - create a separate validator instance for this test
         var logger = Resolve<ILogger<ExpiringKeyValidator>>();
@@ -184,8 +185,22 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
         await validator.DisposeAsync();
 
         // Assert
-        validator.Validate(key1).Should().BeTrue();
-        validator.Validate(key2).Should().BeTrue();
+        AssertDisposedOperations(validator, key1);
+        AssertDisposedOperations(validator, key2);
+        await validator.DisposeAsync();
+    }
+
+    private static void AssertDisposedOperations(IExpiringKeyValidator validator, string key)
+    {
+        Action validate = () => validator.Validate(key);
+        Action validateAndAdd = () => validator.ValidateAndAdd(key, 1000);
+        Action add = () => validator.Add(key, 1000);
+        Action remove = () => validator.Remove(key);
+
+        validate.Should().Throw<ObjectDisposedException>();
+        validateAndAdd.Should().Throw<ObjectDisposedException>();
+        add.Should().Throw<ObjectDisposedException>();
+        remove.Should().Throw<ObjectDisposedException>();
     }
 
     [Test]

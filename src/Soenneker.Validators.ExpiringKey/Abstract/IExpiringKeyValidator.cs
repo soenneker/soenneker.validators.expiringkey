@@ -13,6 +13,7 @@ public interface IExpiringKeyValidator : IValidator, IDisposable, IAsyncDisposab
     /// </summary>
     /// <param name="key">The key to validate.</param>
     /// <returns>True if the key does not exist in the dictionary; otherwise, false.</returns>
+    /// <exception cref="ObjectDisposedException">The validator has been disposed.</exception>
     bool Validate(string key);
 
     /// <summary>
@@ -21,6 +22,7 @@ public interface IExpiringKeyValidator : IValidator, IDisposable, IAsyncDisposab
     /// <param name="key">The key to validate and add.</param>
     /// <param name="expirationTimeMilliseconds">The expiration time in milliseconds for the key.</param>
     /// <returns>True if the key was successfully added; otherwise, false.</returns>
+    /// <exception cref="ObjectDisposedException">The validator has been disposed.</exception>
     bool ValidateAndAdd(string key, int expirationTimeMilliseconds);
 
     /// <summary>
@@ -28,11 +30,13 @@ public interface IExpiringKeyValidator : IValidator, IDisposable, IAsyncDisposab
     /// </summary>
     /// <param name="key">The key to add.</param>
     /// <param name="expirationTimeMilliseconds">The expiration time in milliseconds for the key.</param>
+    /// <exception cref="ObjectDisposedException">The validator has been disposed.</exception>
     void Add(string key, int expirationTimeMilliseconds);
 
     /// <summary>
     /// Removes the provided key, when present, and synchronously disposes its associated timer.
     /// </summary>
     /// <param name="key">The key to remove.</param>
+    /// <exception cref="ObjectDisposedException">The validator has been disposed.</exception>
     void Remove(string key);
 }
