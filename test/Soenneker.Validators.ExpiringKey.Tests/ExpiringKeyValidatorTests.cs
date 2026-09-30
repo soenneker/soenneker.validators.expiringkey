@@ -130,7 +130,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Expire_ShouldRemoveKeyAfterExpiration()
+    public async ValueTask Expire_ShouldRemoveKeyAfterExpiration()
     {
         // Arrange
         string key = $"test-key-{Guid.NewGuid()}";
@@ -171,7 +171,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public async Task DisposeAsync_ShouldRejectFurtherOperations_AndAllowRepeatedDisposal()
+    public async ValueTask DisposeAsync_ShouldRejectFurtherOperations_AndAllowRepeatedDisposal()
     {
         // Arrange - create a separate validator instance for this test
         var logger = Resolve<ILogger<ExpiringKeyValidator>>();
@@ -204,7 +204,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Parallel_AddAndValidate_ShouldWorkCorrectly()
+    public async ValueTask Parallel_AddAndValidate_ShouldWorkCorrectly()
     {
         // Arrange
         string testId = Guid.NewGuid().ToString();
@@ -249,7 +249,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Parallel_ValidateAndAdd_SameKey_ShouldWorkCorrectly()
+    public async ValueTask Parallel_ValidateAndAdd_SameKey_ShouldWorkCorrectly()
     {
         // Arrange
         string key = $"test-key-{Guid.NewGuid()}";
