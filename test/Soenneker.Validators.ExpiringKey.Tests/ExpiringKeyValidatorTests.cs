@@ -6,6 +6,7 @@ using Soenneker.Tests.HostedUnit;
 using Microsoft.Extensions.Logging;
 
 using AwesomeAssertions;
+using System.Threading;
 
 namespace Soenneker.Validators.ExpiringKey.Tests;
 
@@ -130,7 +131,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask Expire_ShouldRemoveKeyAfterExpiration()
+    public async ValueTask Expire_ShouldRemoveKeyAfterExpiration(CancellationToken cancellationToken)
     {
         // Arrange
         string key = $"test-key-{Guid.NewGuid()}";
@@ -139,7 +140,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
         try
         {
             // Act
-            await Task.Delay(1000); // Wait for the timer to expire
+            await Task.Delay(1000, cancellationToken: cancellationToken); // Wait for the timer to expire
 
             // Assert
             _validator.Validate(key).Should().BeTrue();
@@ -171,7 +172,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask DisposeAsync_ShouldRejectFurtherOperations_AndAllowRepeatedDisposal()
+    public async ValueTask DisposeAsync_ShouldRejectFurtherOperations_AndAllowRepeatedDisposal(CancellationToken cancellationToken)
     {
         // Arrange - create a separate validator instance for this test
         var logger = Resolve<ILogger<ExpiringKeyValidator>>();
@@ -204,7 +205,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask Parallel_AddAndValidate_ShouldWorkCorrectly()
+    public async ValueTask Parallel_AddAndValidate_ShouldWorkCorrectly(CancellationToken cancellationToken)
     {
         // Arrange
         string testId = Guid.NewGuid().ToString();
@@ -233,7 +234,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
             });
 
             // Wait for all keys to expire
-            await Task.Delay(2000);
+            await Task.Delay(2000, cancellationToken: cancellationToken);
 
             // Assert keys are expired
             Parallel.ForEach(keys, key =>
@@ -249,7 +250,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask Parallel_ValidateAndAdd_SameKey_ShouldWorkCorrectly()
+    public async ValueTask Parallel_ValidateAndAdd_SameKey_ShouldWorkCorrectly(CancellationToken cancellationToken)
     {
         // Arrange
         string key = $"test-key-{Guid.NewGuid()}";
@@ -268,7 +269,7 @@ public class ExpiringKeyValidatorTests : HostedUnitTest
             _validator.Validate(key).Should().BeFalse(); // Key should exist
 
             // Wait for the key to expire
-            await Task.Delay(2000);
+            await Task.Delay(2000, cancellationToken: cancellationToken);
 
             // Assert the key has expired
             _validator.Validate(key).Should().BeTrue(); // Key should be expired
